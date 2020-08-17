@@ -9,6 +9,8 @@
 /* Hardware Specific Includes */
 #include "Arduino.h"
 #include <Wire.h>
+extern TwoWire Wire1;   // if use sda1, scl1 
+#define Wire Wire1	    // if use sda1, scl1 s
 
 static void (*ads_read_callback)(uint8_t *);
 
@@ -16,6 +18,7 @@ static void (*ads_read_callback)(uint8_t *);
 static uint8_t read_buffer[ADS_TRANSFER_SIZE];
 
 #define ADS_DEFAULT_ADDR		(0x13)			// Default I2C address of the ADS
+// #define ADS_DEFAULT_ADDR		(0x14)			// Default I2C address of the ADS
 
 static uint32_t ADS_RESET_PIN = 0;
 static uint32_t ADS_INTERRUPT_PIN = 0;
@@ -27,7 +30,7 @@ volatile bool _ads_int_enabled = false;
 /* Device I2C address array. Use ads_hal_update_addr() to 
  * populate this array. */
 static uint8_t ads_addrs[ADS_COUNT] = {
-	ADS_DEFAULT_ADDR,
+	ADS_DEFAULT_ADDR, 0x14, 0x15, 0x16
 };
 
 

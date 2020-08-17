@@ -33,10 +33,14 @@ void ads_two_axis_parse_read_buffer(uint8_t * buffer)
  * @param	run	true if activating ADS, false is putting in suspend mode
  * @return	ADS_OK if successful ADS_ERR_IO if failed
  */
-int ads_two_axis_run(bool run)
+int ads_two_axis_run(bool run, uint8_t device_id)
 {
 	uint8_t buffer[ADS_TRANSFER_SIZE];
-		
+	
+
+	ads_two_axis_select_device(device_id);
+	
+
 	buffer[0] = ADS_RUN;
 	buffer[1] = run;
 		
@@ -116,9 +120,15 @@ int ads_two_axis_select_device(uint8_t device)
  */
 int ads_two_axis_init(ads_init_t * ads_init)
 {	
-	ads_hal_init(&ads_two_axis_parse_read_buffer, ads_init->reset_pin, ads_init->datardy_pin);	
+	static bool init = true;
+	if(init) {
+		ads_hal_init(&ads_two_axis_parse_read_buffer, ads_init->reset_pin, ads_init->datardy_pin);
+		ads_data_callback = ads_init->ads_sample_callback;
+		init = false;
+	}
 	
-	ads_data_callback = ads_init->ads_sample_callback;
+	
+	
 	
 	// Check that the device id matched ADS_TWO_AXIS
 	if(ads_get_dev_id() != ADS_OK)

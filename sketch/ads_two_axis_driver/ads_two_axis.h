@@ -50,7 +50,7 @@ typedef struct {
  * @param	run	true if activating ADS, false is putting in suspend mode
  * @return	ADS_OK if successful ADS_ERR_IO if failed
  */
-int ads_two_axis_run(bool run);
+int ads_two_axis_run(bool run, uint8_t device_id=0);
 
 /**
  * @brief Sets the sample rate of the ADS in free run mode
@@ -135,5 +135,13 @@ int ads_two_axis_wake(void);
  * @return	ADS_OK if dev_id is ADS_TWO_AXIS, ADS_ERR_DEV_ID if not
  */
 int ads_get_dev_id(void);
+
+/**
+ * @brief Updates selected device number the HAL is communicating with
+ *
+ * @param	device number 0-9 
+ * @return	ADS_OK if successful ADS_ERR_BAD_PARAM if failed
+ */
+int ads_two_axis_select_device(uint8_t device);
 
 #endif /* ADS_TWO_AXIS_H_ */
