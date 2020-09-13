@@ -8,6 +8,10 @@ Use the following line if the device has a native USB port, the following line s
 
 
 i2c_scanner.ino, scanner the address of connected devices
-standalone_demo.ino, , demo for connect one sensor and communicating through serial port
-multiple_dev_demo, demo for connect multiple(two) sensors and communicating through serial port
-multiple_dev_ros, demo for connect multiple(two) sensors and communicating through ROS topic
+standalone_demo.ino, , demo for connect one sensor and communicating through serial port,
+multiple_dev_polling_demo, demo for connect multiple(four) sensors and communicating through serial port, using polling mode of the sensors
+multiple_dev_polling_ros, demo for connect multiple(four) sensors and communicating through ROS topic
+
+for multiple device connection, polling mode should be used instead of the interrupt mode.
+
+examples, check the library: https://github.com/sparkfun/SparkFun_Displacement_Sensor_Arduino_Library

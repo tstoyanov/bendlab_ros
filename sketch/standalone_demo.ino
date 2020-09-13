@@ -12,7 +12,7 @@ void signal_filter(float * sample);
 void parse_serial_port(void);
 
 float ang[2];
-volatile unsigned int current_device_id = 0;
+volatile unsigned int current_device_id = 0;  // default address is 0x13, customized 0:0x13, 1:0x14, 2:0x15, 3:0x16
 volatile bool newData = false;
 
 void signal_filter(float * sample)
@@ -63,39 +63,43 @@ void ads_data_callback(float * sample)
   newData = true;
 }
 
+void init_sensor() {
+    ads_init_t init;
+  
+    init.sps = ADS_100_HZ;
+    init.ads_sample_callback = &ads_data_callback;
+    init.reset_pin = ADS_RESET_PIN;                 // Pin connected to ADS reset line
+    init.datardy_pin = ADS_INTERRUPT_PIN;           // Pin connected to ADS data ready interrupt
+  
+    // Initialize ADS hardware abstraction layer, and set the sample rate
+    
+    ads_two_axis_select_device(current_device_id);
+    
+    int ret_val = ads_two_axis_init(&init);
+  
+    if(ret_val == ADS_OK)
+    {
+      Serial.println("Two Axis ADS initialization succeeded");
+    }
+    else
+    {
+      Serial.print("Two Axis ADS initialization failed with reason: ");
+      Serial.println(ret_val);
+    }
+  }
+  
 void setup() {
   Serial.begin(115200);
 
   delay(2000);
   
   Serial.println("Initializing Two Axis sensor");
+  init_sensor();
   
-  ads_init_t init;
-
-  init.sps = ADS_100_HZ;
-  init.ads_sample_callback = &ads_data_callback;
-  init.reset_pin = ADS_RESET_PIN;                 // Pin connected to ADS reset line
-  init.datardy_pin = ADS_INTERRUPT_PIN;           // Pin connected to ADS data ready interrupt
-
-  // Initialize ADS hardware abstraction layer, and set the sample rate
-  
-  ads_two_axis_select_device(0);
-  
-  int ret_val = ads_two_axis_init(&init);
-
-  if(ret_val == ADS_OK)
-  {
-    Serial.println("Two Axis ADS initialization succeeded");
-  }
-  else
-  {
-    Serial.print("Two Axis ADS initialization failed with reason: ");
-    Serial.println(ret_val);
-  }
   
   delay(100);
   // Start reading data!
-  ads_two_axis_run(true);
+  ads_two_axis_run(true,current_device_id);
 }
 
 void loop() {
@@ -130,9 +134,9 @@ void parse_serial_port(void)
     else if(key == 'c')
       ads_two_axis_calibrate(ADS_CALIBRATE_CLEAR, 0);
     else if(key == 'r')
-      ads_two_axis_run(true);
+      ads_two_axis_run(true,current_device_id);
     else if(key == 's')
-      ads_two_axis_run(false);
+      ads_two_axis_run(false,current_device_id);
     else if(key == 'f')
       ads_two_axis_set_sample_rate(ADS_200_HZ);
     else if(key == 'u')
@@ -140,7 +144,7 @@ void parse_serial_port(void)
     else if(key == 'n')
       ads_two_axis_set_sample_rate(ADS_100_HZ);
     else if(key == 'z') {
-      ads_two_axis_update_device_address(1,(uint8_t)0x14);
+      ads_two_axis_update_device_address(1,(uint8_t)0x16);
     }
     else if(key == '1') {     
       if(current_device_id != 0){
@@ -148,6 +152,7 @@ void parse_serial_port(void)
       }
         
       current_device_id = 0;
+      init_sensor();
       ads_two_axis_run(true, current_device_id);
     }
     else if(key == '2') {
@@ -155,6 +160,23 @@ void parse_serial_port(void)
          ads_two_axis_run(false, current_device_id);
       }        
       current_device_id = 1;
+      init_sensor();
+      ads_two_axis_run(true, current_device_id);
+    }
+    else if(key == '3') {
+      if(current_device_id != 2){
+         ads_two_axis_run(false, current_device_id);
+      }        
+      current_device_id = 2;
+      init_sensor();
+      ads_two_axis_run(true, current_device_id);
+    }
+    else if(key == '4') {
+      if(current_device_id != 3){
+         ads_two_axis_run(false, current_device_id);
+      }        
+      current_device_id = 3;
+      init_sensor();
       ads_two_axis_run(true, current_device_id);
     }
 }
