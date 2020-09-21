@@ -99,26 +99,48 @@ void loop()
 {
   if (myFlexSensor1.available() == true && myFlexSensor2.available() == true&& myFlexSensor3.available() == true&& myFlexSensor4.available() == true)
   {
-    Serial.print("1,");
+//    Serial.print("1,");
+//    Serial.print(myFlexSensor1.getX());
+//    Serial.print(",");
+//    Serial.print(myFlexSensor1.getY());
+//    
+//    Serial.print("; 2,");
+//    Serial.print(myFlexSensor2.getX());
+//    Serial.print(",");
+//    Serial.print(myFlexSensor2.getY());
+//    
+//    Serial.print("; 3,");
+//    Serial.print(myFlexSensor3.getX());
+//    Serial.print(",");
+//    Serial.print(myFlexSensor3.getY());
+//    
+//    Serial.print("; 4,");
+//    Serial.print(myFlexSensor4.getX());
+//    Serial.print(",");
+//    Serial.print(myFlexSensor4.getY());
+//    Serial.println();
+
+/// ******* for serial plot ******** 
     Serial.print(myFlexSensor1.getX());
     Serial.print(",");
     Serial.print(myFlexSensor1.getY());
     
-    Serial.print("; 2,");
+    Serial.print(",");
     Serial.print(myFlexSensor2.getX());
     Serial.print(",");
     Serial.print(myFlexSensor2.getY());
     
-    Serial.print("; 3,");
+    Serial.print(",");
     Serial.print(myFlexSensor3.getX());
     Serial.print(",");
     Serial.print(myFlexSensor3.getY());
     
-    Serial.print("; 4,");
+    Serial.print(",");
     Serial.print(myFlexSensor4.getX());
     Serial.print(",");
     Serial.print(myFlexSensor4.getY());
     Serial.println();
   }
+///*********************************
   delay(10);
 }

@@ -2,7 +2,7 @@
 #define USE_USBCON
 
 #include <ros.h>
-#include <std_msgs/Float32MultiArray.h>
+#include <rosserial_msgs/BendingSensorReadings.h>
 
 
 #define I2C1  /// use sda1 and scl1
@@ -31,7 +31,7 @@ ADS myFlexSensor4; //Create object of the ADS class
 
 
 //Set up the ros node and publisher
-std_msgs::Float32MultiArray sensor_reading_msg;
+rosserial_msgs::BendingSensorReadings sensor_reading_msg;
 ros::Publisher pub_temp("BendingSensorReadings", &sensor_reading_msg);
 ros::NodeHandle nh;
 
@@ -41,9 +41,8 @@ void setup()
   nh.getHardware()->setBaud(115200);
   nh.initNode();
   nh.advertise(pub_temp);
-  sensor_reading_msg.data = (float*)malloc(sizeof(float) * DEVICE_NUM * 2);
-  sensor_reading_msg.data_length = DEVICE_NUM * 2;
-
+  sensor_reading_msg.values = (float*)malloc(sizeof(float) * DEVICE_NUM * 2);
+  sensor_reading_msg.values_length = DEVICE_NUM * 2;
   
   Wire.begin();
 
@@ -86,18 +85,21 @@ void loop()
 {
   if (myFlexSensor1.available() == true && myFlexSensor2.available() == true&& myFlexSensor3.available() == true&& myFlexSensor4.available() == true)
   {
-    sensor_reading_msg.data[0] = myFlexSensor1.getX();
-    sensor_reading_msg.data[1] = myFlexSensor1.getY();
-    
-    sensor_reading_msg.data[2] = myFlexSensor2.getX();
-    sensor_reading_msg.data[3] = myFlexSensor2.getY();
-    
-    sensor_reading_msg.data[4] = myFlexSensor3.getX();
-    sensor_reading_msg.data[5] = myFlexSensor3.getY();
-    
-    sensor_reading_msg.data[6] = myFlexSensor4.getX();
-    sensor_reading_msg.data[7] = myFlexSensor4.getY();
 
+    sensor_reading_msg.header.seq = 0;
+    sensor_reading_msg.header.stamp = nh.now();
+    sensor_reading_msg.values[0] = myFlexSensor1.getX();
+    sensor_reading_msg.values[1] = myFlexSensor1.getY();
+    
+    sensor_reading_msg.values[2] = myFlexSensor2.getX();
+    sensor_reading_msg.values[3] = myFlexSensor2.getY();
+    
+    sensor_reading_msg.values[4] = myFlexSensor3.getX();
+    sensor_reading_msg.values[5] = myFlexSensor3.getY();
+    
+    sensor_reading_msg.values[6] = myFlexSensor4.getX();
+    sensor_reading_msg.values[7] = myFlexSensor4.getY();
+    
     pub_temp.publish(&sensor_reading_msg);
   }
   delay(10);

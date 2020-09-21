@@ -13,5 +13,6 @@ multiple_dev_polling_demo, demo for connect multiple(four) sensors and communica
 multiple_dev_polling_ros, demo for connect multiple(four) sensors and communicating through ROS topic
 
 for multiple device connection, polling mode should be used instead of the interrupt mode.
+when using polling mode, please check the SparkFun library, in function bool ADS::begin(uint8_t deviceAddress, TwoWire &wirePort) of SparkFun_Displacement_Sensor,Arduino_Library.cpp, the line 69 poll(); is used while line 67 run(); is commented.
 
 examples, check the library: https://github.com/sparkfun/SparkFun_Displacement_Sensor_Arduino_Library
